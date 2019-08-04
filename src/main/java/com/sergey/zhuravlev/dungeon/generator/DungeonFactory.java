@@ -143,9 +143,9 @@ public class DungeonFactory {
         int[][] cell = dungeon.getCells();
 
         for (int y = 0; y < halfRows; y++) {
-            int r = (y * 2);
+            int r = (y * 2) + 1;
             for (int x = 0; x < halfColumns; x++) {
-                int c = (x * 2);
+                int c = (x * 2) + 1;
 
                 if ((cell[r][c] & CellConstant.ROOM) != 0) {
                     continue;
@@ -155,7 +155,7 @@ public class DungeonFactory {
                     continue;
                 }
 
-                dungeon = emplaceRoom(dungeon, new Rectangle(x, y, null, null), c, r);
+                dungeon = emplaceRoom(dungeon, new Rectangle(x, y, null, null));
             }
         }
         return dungeon;
@@ -168,7 +168,7 @@ public class DungeonFactory {
         int r = 0;
 
         for (int i = 0; i < rooms; i++) {
-            dungeon = emplaceRoom(dungeon, new Rectangle(), c, r);
+            dungeon = emplaceRoom(dungeon, new Rectangle());
         }
         return dungeon;
     }
@@ -180,7 +180,7 @@ public class DungeonFactory {
         return rooms;
     }
 
-    private Dungeon emplaceRoom(Dungeon dungeon, Rectangle proto, int c, int r) {
+    private Dungeon emplaceRoom(Dungeon dungeon, Rectangle proto) {
         if (rooms == 999) {
             return dungeon;
         }
@@ -218,8 +218,8 @@ public class DungeonFactory {
         lastRoomId = roomId;
 
         // emplace room
-        for (r = rowStart; r <= rowEnd; r++) {
-            for (c = columnStart; c <= columnEnd; c++) {
+        for (int r = rowStart; r <= rowEnd; r++) {
+            for (int c = columnStart; c <= columnEnd; c++) {
                 if ((cell[r][c] & CellConstant.ENTRANCE) != 0) {
                     cell[r][c] &= ~CellConstant.ENTRANCE;
                 } else if ((cell[r][c] & CellConstant.PERIMETER) != 0) {
@@ -240,7 +240,7 @@ public class DungeonFactory {
                 new HashMap<>());
         dungeon.getRooms().put(roomId, room);
 
-        for (r = rowStart - 1; r <= rowEnd + 1; r++) {
+        for (int r = rowStart - 1; r <= rowEnd + 1; r++) {
             if ((cell[r][columnStart - 1] & (CellConstant.ROOM | CellConstant.ENTRANCE)) == 0) {
                 cell[r][columnStart - 1] |= CellConstant.PERIMETER;
             }
@@ -248,7 +248,7 @@ public class DungeonFactory {
                 cell[r][columnEnd + 1] |= CellConstant.PERIMETER;
             }
         }
-        for (c = columnStart - 1; c <= columnEnd + 1; c++) {
+        for (int c = columnStart - 1; c <= columnEnd + 1; c++) {
             if ((cell[rowStart - 1][c] & (CellConstant.ROOM | CellConstant.ENTRANCE)) == 0) {
                 cell[rowStart - 1][c] |= CellConstant.PERIMETER;
             }
