@@ -15,12 +15,15 @@ public @Data class Dungeon {
     @ToString.Exclude
     private int [][] cells;
 
+    private Map<String, Integer> connects;
+
     private Map<Integer, Room> rooms;
 
     private List<Stair> stair;
 
     public Dungeon(int rows, int columns) {
         this.cells = new int[rows][columns];
+        this.connects = new HashMap<>();
         this.rooms = new HashMap<>();
         this.stair = new ArrayList<>();
     }

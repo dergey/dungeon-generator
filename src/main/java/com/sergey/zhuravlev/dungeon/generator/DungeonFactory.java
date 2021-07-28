@@ -17,7 +17,7 @@ public class DungeonFactory {
 
     @Getter
     @RequiredArgsConstructor
-    public class Sill {
+    public static class Sill {
 
         private final Integer row;
         private final Integer column;
@@ -27,10 +27,6 @@ public class DungeonFactory {
         private final int outId;
 
     }
-
-    private static int LABYRINTH = 0;
-    private static int BENT = 50;
-    private static int STRAIGHT = 100;
 
     private final Integer rows;
     private final Integer columns;
@@ -50,7 +46,6 @@ public class DungeonFactory {
     private Integer maxRow;
     private Integer maxColumn;
     private Integer rooms;
-    private Integer lastRoomId;
 
     private Integer roomBase;
     private Integer roomRadix;
@@ -131,10 +126,15 @@ public class DungeonFactory {
     }
 
     private Dungeon emplaceRooms(Dungeon dungeon) {
-        if (roomLayout == RoomLayout.PACKED) {
-            dungeon = packRooms(dungeon);
-        } else {
-            dungeon = scatterRooms(dungeon);
+        switch (roomLayout) {
+            case PACKED:
+                dungeon = packRooms(dungeon);
+                break;
+            case SCATTERED:
+                dungeon = scatterRooms(dungeon);
+                break;
+            default:
+                throw new IllegalArgumentException(roomLayout.name());
         }
         return dungeon;
     }
@@ -163,9 +163,6 @@ public class DungeonFactory {
 
     private Dungeon scatterRooms(Dungeon dungeon) {
         int rooms = allocRooms(dungeon);
-
-        int c = 0;
-        int r = 0;
 
         for (int i = 0; i < rooms; i++) {
             dungeon = emplaceRoom(dungeon, new Rectangle());
@@ -215,7 +212,6 @@ public class DungeonFactory {
         } else {
             return dungeon;
         }
-        lastRoomId = roomId;
 
         // emplace room
         for (int r = rowStart; r <= rowEnd; r++) {
@@ -233,8 +229,8 @@ public class DungeonFactory {
 
         Room room = new Room(roomId,
                 rowStart, columnStart,
-                rowStart, columnStart,
-                rowEnd, columnEnd,
+                rowStart, rowEnd,
+                columnStart, columnEnd,
                 height, width,
                 height * width,
                 new HashMap<>());
@@ -264,7 +260,7 @@ public class DungeonFactory {
         if (proto.getHeight() == null) {
             if (proto.getY() != null) {
                 int a = halfRows - base - proto.getY();
-                a = (a < 0) ? 0 : a;
+                a = Math.max(a, 0);
                 int r = (a < radix) ? a : radix;
 
                 proto.setHeight((r <= 0) ? 0 : random.nextInt(r) + base);
@@ -275,7 +271,7 @@ public class DungeonFactory {
         if (proto.getWidth() == null) {
             if (proto.getX() != null) {
                 int a = halfColumns - base - proto.getX();
-                a = (a < 0) ? 0 : a;
+                a = Math.max(a, 0);
                 int r = (a < radix) ? a : radix;
 
                 proto.setWidth((r <= 0) ? 0 : random.nextInt(r) + base);
@@ -293,12 +289,12 @@ public class DungeonFactory {
         return proto;
     }
 
-    private Map<Integer, Integer> soundRoom(Dungeon dungeon, int r1, int c1, int r2, int c2) {
+    private Map<Integer, Integer> soundRoom(Dungeon dungeon, int rowStart, int columnStart, int rowEnd, int columnEnd) {
         int[][] cell = dungeon.getCells();
         Map<Integer, Integer> hit = new HashMap<>();
 
-        for (int r = r1; r <= r2; r++) {
-            for (int c = c1; c <= c2; c++) {
+        for (int r = rowStart; r <= rowEnd; r++) {
+            for (int c = columnStart; c <= columnEnd; c++) {
                 if ((cell[r][c] & CellConstant.BLOCKED) != 0) {
                     return null;
                 }
@@ -319,7 +315,6 @@ public class DungeonFactory {
     }
 
     private Dungeon openRoom(Dungeon dungeon, Room room) {
-        Map<String, Integer> connects = new HashMap<>();
         List<Sill> sills = doorSills(dungeon, room);
         if (sills.isEmpty()) {
             return dungeon;
@@ -348,7 +343,7 @@ public class DungeonFactory {
                 String connect = sort(room.getId(), outId).stream()
                         .map(String::valueOf)
                         .collect(Collectors.joining("-"));
-                connects.merge(connect, 1, Integer::sum);
+                dungeon.getConnects().merge(connect, 1, Integer::sum);
             }
 
             int openRow = sill.getRow();
@@ -449,8 +444,8 @@ public class DungeonFactory {
         return sills;
     }
 
-    private Sill checkSill(int[][] cell, Room room, int sillRows, int sillColumn, Direction direction) {
-        int doorRow = sillRows + direction.getY();
+    private Sill checkSill(int[][] cell, Room room, int sillRow, int sillColumn, Direction direction) {
+        int doorRow = sillRow + direction.getY();
         int doorColumn = sillColumn + direction.getX();
         int doorCell = cell[doorRow][doorColumn];
         if ((doorCell & CellConstant.PERIMETER) == 0) {
@@ -474,7 +469,7 @@ public class DungeonFactory {
                 return null;
             }
         }
-        return new Sill(sillRows, sillColumn, direction, doorRow, doorColumn, outId);
+        return new Sill(sillRow, sillColumn, direction, doorRow, doorColumn, outId);
     }
 
     private int generateDoorType() {
@@ -641,7 +636,6 @@ public class DungeonFactory {
         int[][] cell = dungeon.getCells();
         List<Stair> stairs = new ArrayList<>();
 
-        ROW:
         for (int i = 0; i < halfRows; i++) {
             int r = (i * 2) + 1;
             COL:
@@ -671,7 +665,7 @@ public class DungeonFactory {
     }
 
     private Dungeon cleanDungeon(Dungeon dungeon) {
-        if (removeDeadendsPercentage > 0.0) {
+        if (removeDeadendsPercentage > 0) {
             dungeon = removeDeadends(dungeon);
         }
         dungeon = fixDoors(dungeon);
@@ -687,7 +681,7 @@ public class DungeonFactory {
     }
 
     private Dungeon collapseTunnels(Dungeon dungeon, int p) {
-        if (p == 0.0) {
+        if (p == 0) {
             return dungeon;
         }
         boolean all = (p == 100);

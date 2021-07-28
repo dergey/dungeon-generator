@@ -35,7 +35,7 @@ public class StairEnd {
             case EAST:
                 return EAST_WALLED_END;
             default:
-                return null;
+                throw new IllegalArgumentException(direction.name());
         }
     }
 
@@ -50,7 +50,7 @@ public class StairEnd {
             case EAST:
                 return EAST_CORRIDOR_END;
             default:
-                return null;
+                throw new IllegalArgumentException(direction.name());
         }
     }
 
@@ -65,7 +65,7 @@ public class StairEnd {
             case EAST:
                 return EAST_STAIR_END;
             default:
-                return null;
+                throw new IllegalArgumentException(direction.name());
         }
     }
 
@@ -80,7 +80,7 @@ public class StairEnd {
             case EAST:
                 return EAST_NEXT_END;
             default:
-                return null;
+                throw new IllegalArgumentException(direction.name());
         }
     }
 
