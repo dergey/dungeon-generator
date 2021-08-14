@@ -6,7 +6,7 @@
 
     <groupId>com.sergey.zhuravlev</groupId>
     <artifactId>dungeon.generator</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1</version>
     <build>
         <plugins>
             <plugin>
@@ -34,5 +34,12 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/dergey/dungeon-generator</url>
+        </repository>
+    </distributionManagement>
 
 </project>
