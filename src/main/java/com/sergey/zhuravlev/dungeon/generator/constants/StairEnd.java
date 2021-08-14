@@ -4,25 +4,25 @@ import com.sergey.zhuravlev.dungeon.generator.enums.Direction;
 
 public class StairEnd {
 
-    private static int[][] NORTH_WALLED_END = {{1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}};
-    private static int[][] NORTH_CORRIDOR_END = {{0, 0}, {1, 0}, {2, 0}};
-    private static int[] NORTH_STAIR_END = {0, 0};
-    private static int[] NORTH_NEXT_END = {1, 0};
+    private static final int[][] NORTH_WALLED_END = {{1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+    private static final int[][] NORTH_CORRIDOR_END = {{0, 0}, {1, 0}, {2, 0}};
+    private static final int[] NORTH_STAIR_END = {0, 0};
+    private static final int[] NORTH_NEXT_END = {1, 0};
 
-    private static int[][] SOUTH_WALLED_END = {{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}};
-    private static int[][] SOUTH_CORRIDOR_END = {{0, 0}, {-1, 0}, {-2, 0}};
-    private static int[] SOUTH_STAIR_END = {0, 0};
-    private static int[] SOUTH_NEXT_END = {-1, 0};
+    private static final int[][] SOUTH_WALLED_END = {{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}};
+    private static final int[][] SOUTH_CORRIDOR_END = {{0, 0}, {-1, 0}, {-2, 0}};
+    private static final int[] SOUTH_STAIR_END = {0, 0};
+    private static final int[] SOUTH_NEXT_END = {-1, 0};
 
-    private static int[][] WEST_WALLED_END = {{-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}};
-    private static int[][] WEST_CORRIDOR_END = {{0, 0}, {0, 1}, {0, 2}};
-    private static int[] WEST_STAIR_END = {0, 0};
-    private static int[] WEST_NEXT_END = {0, 1};
+    private static final int[][] WEST_WALLED_END = {{-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}};
+    private static final int[][] WEST_CORRIDOR_END = {{0, 0}, {0, 1}, {0, 2}};
+    private static final int[] WEST_STAIR_END = {0, 0};
+    private static final int[] WEST_NEXT_END = {0, 1};
 
-    private static int[][] EAST_WALLED_END = {{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}};
-    private static int[][] EAST_CORRIDOR_END = {{0, 0}, {0, -1}, {0, -2}};
-    private static int[] EAST_STAIR_END = {0, 0};
-    private static int[] EAST_NEXT_END = {0, -1};
+    private static final int[][] EAST_WALLED_END = {{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}};
+    private static final int[][] EAST_CORRIDOR_END = {{0, 0}, {0, -1}, {0, -2}};
+    private static final int[] EAST_STAIR_END = {0, 0};
+    private static final int[] EAST_NEXT_END = {0, -1};
 
     public static int[][] getWalledEnd(Direction direction) {
         switch (direction) {

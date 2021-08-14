@@ -604,7 +604,7 @@ public class DungeonFactory {
             return dungeon;
         }
         List<Stair> stairEnds = createStairEnds(dungeon);
-        if (stairEnds == null) {
+        if (stairEnds.isEmpty()) {
             return dungeon;
         }
         int[][] cell = dungeon.getCells();
